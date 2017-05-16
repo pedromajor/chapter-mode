@@ -86,7 +86,17 @@
     (center-line) (newline) (newline)
     (message "Promoted to chapter")))
 
+(defun chapter-mode-insert-mode-header ()
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (goto-char (point-min))
+    (insert (format "-*- %s -*-\n" mode-name))))
+
 (define-key chapter-mode-map (kbd "C-c m p")
   #'chapter-mode-promote)
+
+(define-key chapter-mode-map (kbd "C-c m h")
+  #'chapter-mode-insert-mode-header)
 
 (provide 'chapter-mode)
