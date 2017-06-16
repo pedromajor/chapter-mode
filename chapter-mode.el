@@ -40,6 +40,9 @@
 
 (defconst chapter-mode--chapter-marker "-~-")
 
+(defface chapter-mode-chapter-face '((t (:foreground "white")))
+  "Chapter face for chapter separation/title")
+
 (defface chapter-mode-code-face '((t (:foreground "#0087AF")))
   "Chapter face for source code")
 
@@ -50,16 +53,42 @@
 (defface chapter-mode-highlight-face2 '((t (:foreground "#EDAA7F")))
   "Chapter face to highlight stuff")
 
+(defface chapter-mode-unchecked-face '((t (:foreground "#FF007F" :background "#ffefef" :bold t)))
+  "Chapter face for unchecked box")
+
+(defface chapter-mode-checked-face '((t (:foreground "#40c7eF" :bold t)))
+  "Chapter face for checked box")
+
+(defface chapter-mode-vblock-face
+  '((t (:foreground "#40c7eF" :background "#a0f7fF":bold t)))
+  "Chapter face for vertical blocks (eg. a quote block)")
+
+(defface chapter-mode-quote-mark-face
+  '((t (:foreground "#e0e7f4")))
+  "Chapter face for vertical blocks (eg. a quote block)")
+
+(defface chapter-mode-quote-face
+  '((t (:foreground "#ec9346")))
+  "Chapter face for vertical blocks (eg. a quote block)")
+
 (define-derived-mode chapter-mode fundamental-mode
   "Chapter"
   "Major mode derived from Fundamental to allow chapter navigation"
   (font-lock-add-keywords
    nil
-   '(("`\\([a-z-A-Z-0-9\s]*\\)'*" 1 'chapter-mode-code-face)
-     ("_\\([a-zA-Z0-9'\s-.]+\\)_" 1 'chapter-mode-highlight-face)
-     ("\\*\\(.*\\)\\*"        . 'chapter-mode-highlight-face2)))
+   '(("-~-\s*.+\s.*-~-"           . 'chapter-mode-chapter-face)
+     ("`\\([a-z-A-Z-0-9\s]*\\)'*" . 'chapter-mode-code-face)
+     ("_\\([a-zA-Z0-9'\s-.]+\\)_" . 'chapter-mode-highlight-face)
+     ("^[\s]?\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
+     ("\\[\s?\\]"                 . 'chapter-mode-unchecked-face)
+     ("\\[[xX]\\]"                . 'chapter-mode-checked-face)
+     ("^|\s?"                     . 'chapter-mode-vblock-face)
+     ("^|>\s"                     . 'chapter-mode-quote-mark-face)
+     ("^|>\s\\(.*\\)\\+"          . 'chapter-mode-quote-face)))
   (add-to-list 'imenu-generic-expression
-               '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t))
+               '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t)
+  (add-to-list 'imenu-generic-expression
+               '("Topic" "^\\*\\(.+\\)*" 1) t))
 
 (defun chapter-mode--extract-from (region-type)
   "Extracts the text marked or found by `REGION-TYPE'
