@@ -78,8 +78,8 @@
    nil
    '(("-~-\s*.+\s.*-~-"           . 'chapter-mode-chapter-face)
      ("`\\([a-z-A-Z-0-9\s]*\\)'*" . 'chapter-mode-code-face)
-     ("_\\([a-zA-Z0-9'\s-.]+\\)_" . 'chapter-mode-highlight-face)
-     ("^[\s]?\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
+     ("\s+_\\([a-zA-Z0-9'\s-.]+\\)_\s+" . 'chapter-mode-highlight-face)
+     ("^[\s]?+\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
      ("\\[\s?\\]"                 . 'chapter-mode-unchecked-face)
      ("\\[[xX]\\]"                . 'chapter-mode-checked-face)
      ("^|\s?"                     . 'chapter-mode-vblock-face)
@@ -88,21 +88,21 @@
   (add-to-list 'imenu-generic-expression
                '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t)
   (add-to-list 'imenu-generic-expression
-               '("Topic" "^\\*\\(.+\\)*" 1) t))
+               '("Topic" "^\\*\\(.+\\)\\*" 1) t))
 
 (defun chapter-mode--extract-from (region-type)
   "Extracts the text marked or found by `REGION-TYPE'
 `REGION-TYPE' can take the values: 'word 'sentence"
   (cond
-    ((region-active-p)
-     (delete-and-extract-region (region-beginning)
-                                (region-end)))
-    (t
-      ;; fix when no next line after region
-      (end-of-line) (new-line-dwim) (previous-line)
-      (destructuring-bind
+   ((region-active-p)
+    (delete-and-extract-region (region-beginning)
+                               (region-end)))
+   (t
+    ;; fix when no next line after region
+    (end-of-line) (new-line-dwim) (previous-line)
+    (destructuring-bind
         (b . e) (bounds-of-thing-at-point region-type)
-        (if e
+      (if e
           (delete-and-extract-region b e))))))
 
 (defun chapter-mode-promote ()
