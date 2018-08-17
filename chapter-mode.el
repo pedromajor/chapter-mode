@@ -37,6 +37,7 @@
 
 ;;; Code:
 (require 'thingatpt)
+(require 'hydra)
 
 (defconst chapter-mode--chapter-marker "-~-")
 
@@ -59,6 +60,9 @@
 (defface chapter-mode-checked-face '((t (:foreground "#40c7eF" :bold t)))
   "Chapter face for checked box")
 
+(defface chapter-mode-box-face '((t (:foreground "#4aa" :bold nil)))
+  "Chapter face for checked box")
+
 (defface chapter-mode-vblock-face
   '((t (:foreground "#40c7eF" :background "#a0f7fF":bold t)))
   "Chapter face for vertical blocks (eg. a quote block)")
@@ -76,15 +80,17 @@
   "Major mode derived from Fundamental to allow chapter navigation"
   (font-lock-add-keywords
    nil
-   '(("-~-\s*.+\s.*-~-"           . 'chapter-mode-chapter-face)
+   '(("\s*-~-\s*.+\s.*-~-\s*"     . 'chapter-mode-chapter-face)
      ("`\\([a-z-A-Z-0-9\s]*\\)'*" . 'chapter-mode-code-face)
      ("\s+_\\([a-zA-Z0-9'\s-.]+\\)_\s+" . 'chapter-mode-highlight-face)
      ("^[\s]?+\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
-     ("\\[\s?\\]"                 . 'chapter-mode-unchecked-face)
-     ("\\[[xX]\\]"                . 'chapter-mode-checked-face)
-     ("^|\s?"                     . 'chapter-mode-vblock-face)
-     ("^|>\s"                     . 'chapter-mode-quote-mark-face)
-     ("^|>\s\\(.*\\)\\+"          . 'chapter-mode-quote-face)))
+     ("^-\s\\[\s?\\]"              . 'chapter-mode-unchecked-face)
+     ("^-\s\\[[xX]\\]"             . 'chapter-mode-checked-face)
+     ("^\\[\\(.*\\)]"              1 'chapter-mode-box-face)
+     ("^|\s"                       . 'chapter-mode-vblock-face)
+     ("^|>\s+\\(.+\\)"             1 'chapter-mode-quote-face)
+     ("^|>\s+"                     0 'chapter-mode-quote-mark-face)
+     ("https?.+"                   . 'link)))
   (add-to-list 'imenu-generic-expression
                '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t)
   (add-to-list 'imenu-generic-expression
@@ -115,6 +121,18 @@
     (center-line) (newline) (newline)
     (message "Promoted to chapter")))
 
+(defun chapter-mode-promote-2 ()
+  "Promotes sentence to chapter variation 2"
+  (interactive)
+  (save-excursion
+    (center-line)
+    (beginning-of-line)
+    (insert (concat chapter-mode--chapter-marker " "))
+    (end-of-line)
+    (while (< (current-column) (- fill-column 3))
+      (insert " "))
+    (insert chapter-mode--chapter-marker)))
+
 (defun chapter-mode-insert-mode-header ()
   (interactive)
   (save-excursion
@@ -125,7 +143,12 @@
 (define-key chapter-mode-map (kbd "C-c m p")
   #'chapter-mode-promote)
 
-(define-key chapter-mode-map (kbd "C-c m h")
+(define-key chapter-mode-map (kbd "C-c m i h")
   #'chapter-mode-insert-mode-header)
+
+(defhydra hydra-chapter-mode (chapter-mode-map "C-c m")
+  ("o" chapter-mode-promote "Promote to Chapter")
+  ("p" chapter-mode-promote-2 "Promote to Chapter V2")
+  ("h" hydra-chapter-mode/body))
 
 (provide 'chapter-mode)
