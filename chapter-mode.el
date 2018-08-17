@@ -80,8 +80,8 @@
   "Major mode derived from Fundamental to allow chapter navigation"
   (font-lock-add-keywords
    nil
-   '(("\s*-~-\s*.+\s.*-~-\s*"     . 'chapter-mode-chapter-face)
-     ("`\\([a-z-A-Z-0-9\s]*\\)'*" . 'chapter-mode-code-face)
+   '(("\s*-~-\s*.+\s.*-~-\s*"      . 'chapter-mode-chapter-face)
+     ("`\\([a-z-A-Z-0-9\s]*\\)'*"  . 'chapter-mode-code-face)
      ("\s+_\\([a-zA-Z0-9'\s-.]+\\)_\s+" . 'chapter-mode-highlight-face)
      ("^[\s]?+\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
      ("^-\s\\[\s?\\]"              . 'chapter-mode-unchecked-face)
@@ -90,7 +90,8 @@
      ("^|\s"                       . 'chapter-mode-vblock-face)
      ("^|>\s+\\(.+\\)"             1 'chapter-mode-quote-face)
      ("^|>\s+"                     0 'chapter-mode-quote-mark-face)
-     ("https?.+"                   . 'link)))
+     ("https?.+"                   . 'link)
+     (".*`\\{3\\}\\(.+\n*.*\\)*\n" 1 'chapter-mode-code-face)))
   (add-to-list 'imenu-generic-expression
                '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t)
   (add-to-list 'imenu-generic-expression
@@ -121,6 +122,13 @@
     (center-line) (newline) (newline)
     (message "Promoted to chapter")))
 
+(defun chapter-mode--mark-thing-at-point ()
+  (interactive)
+  (when (not (use-region-p))
+    (let ((b (bounds-of-thing-at-point 'sentence)))
+      (goto-char (car b))
+      (set-mark (cdr b)))))
+
 (defun chapter-mode-promote-2 ()
   "Promotes sentence to chapter variation 2"
   (interactive)
@@ -140,6 +148,12 @@
     (goto-char (point-min))
     (insert (format "-*- %s -*-\n" mode-name))))
 
+(defun chapter-mode-mark-1 ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (insert "|> ")))
+
 (define-key chapter-mode-map (kbd "C-c m p")
   #'chapter-mode-promote)
 
@@ -149,6 +163,7 @@
 (defhydra hydra-chapter-mode (chapter-mode-map "C-c m")
   ("o" chapter-mode-promote "Promote to Chapter")
   ("p" chapter-mode-promote-2 "Promote to Chapter V2")
+  ("m1" chapter-mode-mark-1  "|>")
   ("h" hydra-chapter-mode/body))
 
 (provide 'chapter-mode)
