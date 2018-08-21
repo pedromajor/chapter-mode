@@ -163,6 +163,15 @@
     (beginning-of-line)
     (insert "|> ")))
 
+(defun chapter-mode-mark-0 ()
+  (interactive)
+  (re-search-forward "\s*\\(.+\\)" nil t)
+  (let ((s (match-string 1)))
+    (when s
+      (beginning-of-line)
+      (kill-line)
+      (insert "*" (string-trim s) "*"))))
+
 (define-key chapter-mode-map (kbd "C-c m p")
   #'chapter-mode-promote)
 
@@ -173,7 +182,8 @@
   ("o" chapter-mode-promote "Promote to Chapter")
   ("p" chapter-mode-promote-2 "Promote to Chapter V2")
   ("d" chapter-mode-demote    "Demote Chapter")
-  ("m1" chapter-mode-mark-1  "|>")
+  ("ms" chapter-mode-mark-0 "*---*")
+  ("ma" chapter-mode-mark-1 "|>")
   ("h" hydra-chapter-mode/body))
 
 (provide 'chapter-mode)
