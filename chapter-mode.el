@@ -131,6 +131,7 @@
 
 (defun chapter-mode-demote ()
   (interactive)
+  (beginning-of-line)
   (re-search-forward "\s*-~-\s*\\(.+\\)\s*-~-" nil t)
   (let ((s (match-string 1)))
     (when s
@@ -165,6 +166,7 @@
 
 (defun chapter-mode-mark-0 ()
   (interactive)
+  (beginning-of-line)
   (re-search-forward "\s*\\(.+\\)" nil t)
   (let ((s (match-string 1)))
     (when s
