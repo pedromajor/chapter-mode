@@ -129,6 +129,15 @@
       (goto-char (car b))
       (set-mark (cdr b)))))
 
+(defun chapter-mode-demote ()
+  (interactive)
+  (re-search-forward "\s*-~-\s*\\(.+\\)\s*-~-" nil t)
+  (let ((s (match-string 1)))
+    (when s
+      (beginning-of-line)
+      (kill-line)
+      (insert (string-trim s)))))
+
 (defun chapter-mode-promote-2 ()
   "Promotes sentence to chapter variation 2"
   (interactive)
@@ -160,9 +169,10 @@
 (define-key chapter-mode-map (kbd "C-c m i h")
   #'chapter-mode-insert-mode-header)
 
-(defhydra hydra-chapter-mode (chapter-mode-map "C-c m")
+(defhydra hydra-chapter-mode (chapter-mode-map "C-c m" :exit true)
   ("o" chapter-mode-promote "Promote to Chapter")
   ("p" chapter-mode-promote-2 "Promote to Chapter V2")
+  ("d" chapter-mode-demote    "Demote Chapter")
   ("m1" chapter-mode-mark-1  "|>")
   ("h" hydra-chapter-mode/body))
 
