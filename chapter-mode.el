@@ -184,8 +184,8 @@
   ("o" chapter-mode-promote "Promote to Chapter")
   ("p" chapter-mode-promote-2 "Promote to Chapter V2")
   ("d" chapter-mode-demote    "Demote Chapter")
-  ("ms" chapter-mode-mark-0 "*---*")
-  ("ma" chapter-mode-mark-1 "|>")
+  ("s" chapter-mode-mark-0 "*---*")
+  ("a" chapter-mode-mark-1 "|>")
   ("h" hydra-chapter-mode/body))
 
 (provide 'chapter-mode)
