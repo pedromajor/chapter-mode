@@ -81,7 +81,7 @@
   (font-lock-add-keywords
    nil
    '(("\s*-~-\s*.+\s.*-~-\s*"      . 'chapter-mode-chapter-face)
-     ("`\\([a-z-A-Z-0-9\s]*\\)'*"  . 'chapter-mode-code-face)
+     ("`\\([a-z-A-Z-0-9.\s]*\\)'*"  . 'chapter-mode-code-face)
      ("\s+_\\([a-zA-Z0-9'\s-.]+\\)_\s+" . 'chapter-mode-highlight-face)
      ("^[\s]?+\\*\\(.*\\)\\*"      . 'chapter-mode-highlight-face2)
      ("^-\s\\[\s?\\]"              . 'chapter-mode-unchecked-face)
@@ -90,8 +90,7 @@
      ("^|\s"                       . 'chapter-mode-vblock-face)
      ("^|>\s+\\(.+\\)"             1 'chapter-mode-quote-face)
      ("^|>\s+"                     0 'chapter-mode-quote-mark-face)
-     ("https?.+"                   . 'link)
-     (".*`\\{3\\}\\(.+\n*.*\\)*\n" 1 'chapter-mode-code-face)))
+     ("https?.+"                   . 'link)))
   (add-to-list 'imenu-generic-expression
                '("Chapter" "-~-\s*\\(.+\\)\s.*-~-" 1) t)
   (add-to-list 'imenu-generic-expression
