@@ -179,12 +179,13 @@
 (define-key chapter-mode-map (kbd "C-c m i h")
   #'chapter-mode-insert-mode-header)
 
-(defhydra hydra-chapter-mode (chapter-mode-map "C-c m" :exit true)
-  ("o" chapter-mode-promote "Promote to Chapter")
-  ("p" chapter-mode-promote-2 "Promote to Chapter V2")
-  ("d" chapter-mode-demote    "Demote Chapter")
-  ("s" chapter-mode-mark-0 "*---*")
-  ("a" chapter-mode-mark-1 "|>")
-  ("h" hydra-chapter-mode/body))
+(major-mode-hydra-define chapter-mode nil
+  ("Chapter"
+   (("o" chapter-mode-promote "Promote to Chapter")
+    ("p" chapter-mode-promote-2 "Promote to Chapter V2")
+    ("d" chapter-mode-demote    "Demote Chapter")
+    ("s" chapter-mode-mark-0 "*---*")
+    ("a" chapter-mode-mark-1 "|>")
+    ("h" hydra-chapter-mode/body))))
 
 (provide 'chapter-mode)
